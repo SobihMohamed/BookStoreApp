@@ -1,4 +1,5 @@
-﻿using BookStoreConsole.Domain.Entities;
+﻿using BookStoreConsole.Data;
+using BookStoreConsole.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,20 +13,38 @@ namespace BookStoreConsole.Services.OrderService
         // In this case, the Action<Book> delegate is used to define an event that can be subscribed to by other parts of the application.
         // When the event is raised, it will pass a Book object as an argument to the subscribed methods.
         public event Action<Book> BookOutOfStock;
+        private readonly InMemoryRepository<Order> _orderRepository;
+        public OrderService()
+        {
+            _orderRepository = InMemoryRepository<Order>.Instance;
+        }
         public void ProcessOrder(Customer customer , Dictionary<Book, int> order)
         {
             ValidateOrder(customer, order);
+            decimal totalAmount = 0;
             foreach (var item in order)
             {
                 var book = item.Key;
                 var quantityToBuy = item.Value;
 
                 book.Stock -= quantityToBuy;
+                totalAmount += book.Price * quantityToBuy;
 
                 // Observer Pattern 
                 if (book.Stock == 0)
                     BookOutOfStock?.Invoke(book);
+
+                var newOrder = new Order
+                {
+                    Customer = customer,
+                    OrderDate = DateTime.Now,
+                    Items = order,
+                    TotalAmount = totalAmount
+                };
+
+                _orderRepository.Add(newOrder);
             }
+
         }
         private void ValidateOrder(Customer customer, Dictionary<Book, int> order)
         {
