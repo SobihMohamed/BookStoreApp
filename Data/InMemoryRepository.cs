@@ -9,6 +9,18 @@ namespace BookStoreConsole.Data
 {
     public class InMemoryRepository<T> : IRepository<T> where T : class
     {
+        // Thread-Safe Singleton Implementation Lazy
+        private static readonly Lazy<InMemoryRepository<T>> _instance =
+            new Lazy<InMemoryRepository<T>>(() => new InMemoryRepository<T>());
+
+        // 2. Public Access Point
+        public static InMemoryRepository<T> Instance => _instance.Value;
+
+        // 3. Private Constructor 
+        private InMemoryRepository()
+        {
+        }
+
         // Using a ConcurrentDictionary to store entities in memory for thread-safe operations
         private readonly ConcurrentDictionary<int, T> _storage = new();
         private int _currentId = 0;
