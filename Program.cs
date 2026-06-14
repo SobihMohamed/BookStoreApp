@@ -1,10 +1,13 @@
-﻿namespace BookStoreConsole
+﻿using BookStoreConsole.UI;
+
+namespace BookStoreConsole
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            var menu = new ConsoleMenu();
+            await menu.StartAsync();
         }
     }
 }
