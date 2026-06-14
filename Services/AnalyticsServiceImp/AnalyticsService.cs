@@ -25,19 +25,17 @@ namespace BookStoreConsole.Services.AnalyticsServiceImp
         }
 
         //Best-selling book
-        public Book GetBestSellingBook()
+        public string GetBestSellingBook()
         {
-            var allItems = _orderRepo.GetAll().SelectMany(o => o.Items);
-
-            var bestSeller = allItems
-                .GroupBy(item => item.Key)
-                .OrderByDescending(g => g.Sum(item => item.Value))
+            var bestSellerName = _orderRepo.GetAll()
+                .SelectMany(o => o.OrderItems)
+                .GroupBy(item => item.BookTitle)
+                .OrderByDescending(g => g.Sum(item => item.Quantity))
                 .Select(g => g.Key)
                 .FirstOrDefault();
 
-            return bestSeller;
+            return bestSellerName ?? "No sales yet.";
         }
-
         //Top customer
         public Customer GetTopCustomer()
         {

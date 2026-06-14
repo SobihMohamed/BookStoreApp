@@ -18,11 +18,14 @@ namespace BookStoreConsole.Services.OrderService
         {
             _orderRepository = InMemoryRepository<Order>.Instance;
         }
-        public void ProcessOrder(Customer customer , Dictionary<Book, int> order)
+        public void ProcessOrder(Customer customer, Dictionary<Book, int> orderDetails)
         {
-            ValidateOrder(customer, order);
+            ValidateOrder(customer, orderDetails);
+
             decimal totalAmount = 0;
-            foreach (var item in order)
+            var itemsList = new List<OrderItem>();
+
+            foreach (var item in orderDetails)
             {
                 var book = item.Key;
                 var quantityToBuy = item.Value;
@@ -30,21 +33,27 @@ namespace BookStoreConsole.Services.OrderService
                 book.Stock -= quantityToBuy;
                 totalAmount += book.Price * quantityToBuy;
 
-                // Observer Pattern 
+                itemsList.Add(new OrderItem
+                {
+                    BookId = book.Id,
+                    BookTitle = book.Title,
+                    Quantity = quantityToBuy,
+                    UnitPrice = book.Price
+                });
+
                 if (book.Stock == 0)
                     BookOutOfStock?.Invoke(book);
-
-                var newOrder = new Order
-                {
-                    Customer = customer,
-                    OrderDate = DateTime.Now,
-                    Items = order,
-                    TotalAmount = totalAmount
-                };
-
-                _orderRepository.Add(newOrder);
             }
 
+            var newOrder = new Order
+            {
+                Customer = customer,
+                OrderDate = DateTime.Now,
+                OrderItems = itemsList,
+                TotalAmount = totalAmount
+            };
+
+            _orderRepository.Add(newOrder);
         }
         private void ValidateOrder(Customer customer, Dictionary<Book, int> order)
         {
