@@ -1,4 +1,4 @@
-# Makanak Book Store (Console Application)
+# Book Store (Console Application)
 
 A highly robust, object-oriented .NET 10 console application designed for managing a bookstore. The system is architected from scratch using Clean Architecture guidelines, strict SOLID principles, and industry-standard Design Patterns to ensure scalability and thread safety.
 
