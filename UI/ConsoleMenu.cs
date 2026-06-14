@@ -39,10 +39,12 @@ namespace BookStoreConsole.UI
         {
             Console.WriteLine("Loading data from system...");
             var loadedBooks = await _storageService.LoadDataAsync<Book>("books.json");
-            foreach (var book in loadedBooks)
-            {
-                _bookRepo.Add(book);
-            }
+            foreach (var book in loadedBooks) _bookRepo.Add(book);
+
+            var loadedOrders = await _storageService.LoadDataAsync<Order>("orders.json");
+            var orderRepo = InMemoryRepository<Order>.Instance;
+            foreach (var order in loadedOrders) orderRepo.Add(order);
+
             InputValidator.ShowSuccess("Data loaded successfully!\n");
 
             bool exit = false;
@@ -82,8 +84,12 @@ namespace BookStoreConsole.UI
                     case 6:
                         ShowAnalytics();
                         break;
-                    case 7: 
+                    case 7:
                         await _storageService.SaveDataAsync(_bookRepo.GetAll(includeDeleted: true), "books.json");
+
+                        var orderRepository = InMemoryRepository<Order>.Instance;
+                        await _storageService.SaveDataAsync(orderRepository.GetAll(), "orders.json");
+
                         InputValidator.ShowSuccess("Data saved successfully. Goodbye!");
                         exit = true;
                         break;
@@ -233,7 +239,7 @@ namespace BookStoreConsole.UI
 
             var bestBook = _analyticsService.GetBestSellingBook();
             if (bestBook != null)
-                Console.WriteLine($"Best Selling Book: {bestBook.Title} by {bestBook.Author}");
+                Console.WriteLine($"Best Selling Book: {bestBook}");
             else
                 Console.WriteLine("Best Selling Book: No sales yet.");
 

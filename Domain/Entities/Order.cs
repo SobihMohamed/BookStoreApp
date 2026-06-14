@@ -9,9 +9,7 @@ namespace BookStoreConsole.Domain.Entities
         public int Id { get; set; }
         public Customer Customer { get; set; }
         public DateTime OrderDate { get; set; }
-
-        public Dictionary<Book, int> Items { get; set; } = new();
-
+        public List<OrderItem> OrderItems { get; set; } = new(); 
         public decimal TotalAmount { get; set; }
     }
 }
