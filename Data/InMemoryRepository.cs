@@ -36,12 +36,17 @@ namespace BookStoreConsole.Data
             _storage[newId] = entity;
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(bool includeDeleted = false)
         {
-            return _storage.Values
-                           .Where(e => !(e is ISoftDelete sd) || sd.IsDeleted == false)// if isSoftDelete is implemented then check if IsDeleted is false, otherwise return all entities
-                           .ToList();
+            if (includeDeleted)
+                return _storage.Values;
 
+            if (typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
+            {
+                return _storage.Values.Where(e => !((ISoftDelete)e).IsDeleted);
+            }
+
+            return _storage.Values;
         }
 
         public T GetById(int id)

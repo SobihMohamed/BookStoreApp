@@ -12,7 +12,7 @@ namespace BookStoreConsole.Services.FactoryDP
         public BookFactory()
         {
             RegisterBookType("Paperback", () => new Paperback());
-            RegisterBookType("E-Book", () => new EBook());
+            RegisterBookType("EBook", () => new EBook());
         }
         public void RegisterBookType(string bookType, Func<Book> creator)
         {

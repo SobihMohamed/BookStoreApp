@@ -50,16 +50,15 @@ namespace BookStoreConsole.Services.AnalyticsServiceImp
             return topCustomer;
         }
 
-        //Filter books by category, author, and price range
         public IEnumerable<Book> FilterBooks(string category = null, string author = null, decimal? minPrice = null, decimal? maxPrice = null)
         {
-            var query = _orderRepo.GetAll().SelectMany(o => o.Items).Select(i => i.Key).Distinct().AsQueryable();
+            var query = _bookRepo.GetAll().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(category))
-                query = query.Where(b => b.Category.Equals(category,StringComparison.OrdinalIgnoreCase));
+                query = query.Where(b => b.Category.Contains(category, StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrWhiteSpace(author))
-                query = query.Where(b => b.Author.Equals(author,StringComparison.OrdinalIgnoreCase));
+                query = query.Where(b => b.Author.Contains(author, StringComparison.OrdinalIgnoreCase));
 
             if (minPrice.HasValue)
                 query = query.Where(b => b.Price >= minPrice.Value);

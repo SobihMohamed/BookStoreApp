@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace BookStoreConsole.Abstraction.Repos
@@ -8,7 +9,7 @@ namespace BookStoreConsole.Abstraction.Repos
     {
         void Add(T entity);
         void Remove(T entity);
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(bool includeDeleted);
         T GetById(int id);
     }
 }
