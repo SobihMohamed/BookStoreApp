@@ -2,7 +2,7 @@
 
 A highly robust, object-oriented .NET 10 console application designed for managing a bookstore. The system is architected from scratch using Clean Architecture guidelines, strict SOLID principles, and industry-standard Design Patterns to ensure scalability and thread safety.
 
-## 🚀 Key Features & Implemented Patterns
+##  Key Features & Implemented Patterns
 
 * **Design Patterns Implementation:**
   * **Factory Pattern:** Encapsulates the creation logic of different book formats (`Paperback`, `EBook`) cleanly.
